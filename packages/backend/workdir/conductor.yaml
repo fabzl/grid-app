@@ -1,0 +1,15 @@
+environment_path: .conductor
+keystore:
+  type: danger_test_keystore
+admin_interfaces:
+  - driver:
+      type: websocket
+      port: 4444
+network:
+  bootstrap_service: https://bootstrap.holo.host
+  transport_pool:
+    - type: quic
+      bind_to: ~
+      quic:
+        max_idle_timeout_ms: 60000
+        keep_alive_interval_ms: 10000

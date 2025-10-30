@@ -12,7 +12,10 @@
     "mobile:start": "yarn --cwd packages/mobile start",
     "mobile:android": "yarn --cwd packages/mobile android",
     "mobile:ios": "yarn --cwd packages/mobile ios",
-    "mobile:web": "yarn --cwd packages/mobile web"
+    "mobile:web": "yarn --cwd packages/mobile web",
+    "backend:demo": "cargo run --manifest-path packages/backend/Cargo.toml --bin demo",
+    "backend:hc:shell": "wsl -e bash -lc 'cd /mnt/c/Users/usuario/grid-app && nix develop'",
+    "backend:hc:run": "wsl -e bash -lc 'cd /mnt/c/Users/usuario/grid-app/packages/backend && hc sandbox generate workdir --run=1 --force --piped -e workdir/conductor.yaml'"
   }
 }
 

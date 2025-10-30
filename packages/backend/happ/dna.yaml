@@ -1,0 +1,14 @@
+name: grip
+version: 0.1.0
+uid: null
+properties: {}
+integrity:
+  network_seed: null
+  origin_time: 2023-01-01T00:00:00.000Z
+zomes:
+  - name: grip_zome
+    hash: null
+    wasm_path: ../target/wasm32-unknown-unknown/release/grip_backend.wasm
+    dependencies: []
+
+
