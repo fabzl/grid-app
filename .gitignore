@@ -1,0 +1,32 @@
+# Node / React Native
+node_modules/
+*.log
+dist/
+build/
+.expo/
+.expo-shared/
+web-build/
+*.expo*
+
+# Yarn/PNPM/NPM
+yarn.lock
+pnpm-lock.yaml
+package-lock.json
+
+# Mac/Windows
+.DS_Store
+Thumbs.db
+
+# Rust / Cargo
+target/
+Cargo.lock
+
+# Env
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+
+

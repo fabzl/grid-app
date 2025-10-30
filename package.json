@@ -1,0 +1,18 @@
+{
+  "name": "grip",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Grip monorepo (React Native + Holochain)",
+  "license": "Apache-2.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "postinstall": "echo 'Workspaces ready'",
+    "mobile:start": "yarn --cwd packages/mobile start",
+    "mobile:android": "yarn --cwd packages/mobile android",
+    "mobile:ios": "yarn --cwd packages/mobile ios",
+    "mobile:web": "yarn --cwd packages/mobile web"
+  }
+}
+

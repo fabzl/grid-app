@@ -1,0 +1,11 @@
+{
+  "name": "grip-mobile",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Grip React Native mobile app (placeholder)",
+  "license": "Apache-2.0",
+  "scripts": {
+    "start": "echo 'Scaffold with create-expo-app first' && exit 1"
+  }
+}
+
