@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  mobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm run web -- --no-open --non-interactive
+        continue-on-error: true
+
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: rustc --version && cargo --version
+      - run: cargo check --verbose
+
+
