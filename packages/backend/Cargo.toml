@@ -8,9 +8,23 @@ name = "grip_backend"
 path = "src/lib.rs"
 crate-type = ["cdylib", "rlib"]
 
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
+
 [dependencies]
+# Holochain
+hdi = "0.5.0"
+hdk = "0.5.0"
+hdk-derive = "0.5.0"
+
+# Serialization
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+
+# Error handling
 thiserror = "1"
 
 
