@@ -89,7 +89,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }),
   logout: () => set({ currentUser: null }),
   updateProfile: (updates) =>
-    set((s) => (s.currentUser ? { currentUser: { ...s.currentUser, ...updates } : s)),
+    set((s) => (s.currentUser ? { currentUser: { ...s.currentUser, ...updates } } : s)),
   reportedUsers: new Set(),
   mutedUsers: new Set(),
   hiddenUsers: new Set(),
