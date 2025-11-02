@@ -24,6 +24,9 @@ Cargo.lock
 # Env
 .env
 .env.*
+*.token
+*.key
+.secrets
 
 # IDE
 .idea/
