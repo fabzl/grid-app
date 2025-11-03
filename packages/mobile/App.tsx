@@ -1,14 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Animated, Button, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useAuthStore, validateRut, UserProfile, Product, Service, Message } from './src/store';
+import Svg, { Path, G } from 'react-native-svg';
 
 type RootStackParamList = {
+  Splash: undefined;
   Login: undefined;
   MainTabs: undefined;
   Profile: undefined;
@@ -25,19 +27,91 @@ type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
+function GripLogoSVG({ width = 200, height = 200 }: { width?: number; height?: number }) {
+  return (
+    <Svg width={width} height={height} viewBox="0 0 200 200">
+      <G>
+        {/* Logo "G" estilizado para Grip - más simple y elegante */}
+        <Path
+          d="M 140 30 C 160 30 175 45 175 65 L 175 135 C 175 155 160 170 140 170 L 60 170 C 40 170 25 155 25 135 L 25 65 C 25 45 40 30 60 30 L 140 30 Z M 140 50 L 60 50 C 50 50 45 55 45 65 L 45 135 C 45 145 50 150 60 150 L 140 150 C 150 150 155 145 155 135 L 155 100 L 115 100 C 110 100 105 95 105 90 L 105 75 C 105 70 110 65 115 65 L 155 65 C 155 55 150 50 140 50 Z"
+          fill="#1f7aec"
+        />
+        {/* Puntos de conexión (network nodes) */}
+        <Path d="M 40 60 C 43 60 45 62 45 65 C 45 68 43 70 40 70 C 37 70 35 68 35 65 C 35 62 37 60 40 60 Z" fill="#1f7aec" opacity="0.7" />
+        <Path d="M 40 130 C 43 130 45 132 45 135 C 45 138 43 140 40 140 C 37 140 35 138 35 135 C 35 132 37 130 40 130 Z" fill="#1f7aec" opacity="0.7" />
+        <Path d="M 160 60 C 163 60 165 62 165 65 C 165 68 163 70 160 70 C 157 70 155 68 155 65 C 155 62 157 60 160 60 Z" fill="#1f7aec" opacity="0.7" />
+        <Path d="M 160 130 C 163 130 165 132 165 135 C 165 138 163 140 160 140 C 157 140 155 138 155 135 C 155 132 157 130 160 130 Z" fill="#1f7aec" opacity="0.7" />
+      </G>
+    </Svg>
+  );
+}
+
+function SplashScreen({ navigation }: any) {
+  const [logoWidth] = useState(200);
+  const progressAnim = useRef(new Animated.Value(0)).current;
+  const currentUser = useAuthStore((s) => s.currentUser);
+
+  useEffect(() => {
+    // Animar la barra de progreso
+    Animated.timing(progressAnim, {
+      toValue: 1,
+      duration: 2500,
+      useNativeDriver: false,
+    }).start();
+
+    // Navegar después de 2.5 segundos - siempre a MainTabs (si hay usuario) o Login
+    const timer = setTimeout(() => {
+      if (currentUser) {
+        // Si ya hay usuario, ir directo a la grilla de perfiles
+        navigation.replace('MainTabs');
+      } else {
+        // Si no hay usuario, mostrar login
+        navigation.replace('Login');
+      }
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [currentUser, navigation]);
+
+  const progressWidth = progressAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0%', `${logoWidth}px`],
+  });
+
+  return (
+    <View style={styles.splashContainer}>
+      <GripLogoSVG width={logoWidth} height={logoWidth} />
+      <View style={[styles.loaderContainer, { width: logoWidth }]}>
+        <View style={styles.loaderTrack} />
+        <Animated.View style={[styles.loaderBar, { width: progressWidth }]} />
+      </View>
+    </View>
+  );
+}
+
 function LoginScreen({ navigation }: any) {
   const [name, setName] = useState('');
   const login = useAuthStore((s) => s.login);
+  
+  function handleLogin() {
+    if (name.trim()) {
+      login(name);
+      navigation.replace('MainTabs');
+    }
+  }
+  
   return (
     <View style={styles.container}>
+      <GripLogoSVG width={120} height={120} />
       <Text style={styles.title}>Grip</Text>
       <TextInput
         placeholder="Tu nombre"
         value={name}
         onChangeText={setName}
         style={styles.input}
+        onSubmitEditing={handleLogin}
       />
-      <TouchableOpacity style={styles.primaryBtn} onPress={() => name && login(name)}>
+      <TouchableOpacity style={styles.primaryBtn} onPress={handleLogin}>
         <Text style={styles.primaryBtnText}>Entrar</Text>
       </TouchableOpacity>
     </View>
@@ -902,26 +976,21 @@ function MainTabs() {
 }
 
 export default function App() {
-  const currentUser = useAuthStore((s) => s.currentUser);
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        {!currentUser ? (
-          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        ) : (
-          <>
-            <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
-            <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'Perfil' }} />
-            <Stack.Screen name="Verification" component={VerificationScreen} options={{ title: 'Verificación' }} />
-            <Stack.Screen name="ProductDetail" component={ProductDetailScreen} options={{ title: 'Producto' }} />
-            <Stack.Screen name="ServiceDetail" component={ServiceDetailScreen} options={{ title: 'Servicio' }} />
-            <Stack.Screen name="CreateProduct" component={CreateProductScreen} options={{ title: 'Vender' }} />
-            <Stack.Screen name="CreateService" component={CreateServiceScreen} options={{ title: 'Servicio' }} />
-            <Stack.Screen name="Chat" component={ChatScreen} options={{ title: 'Chat' }} />
-            <Stack.Screen name="VideoCall" component={VideoCallScreen} options={{ title: 'Video llamada', headerShown: false }} />
-            <Stack.Screen name="UserOptions" component={UserOptionsScreen} options={{ title: 'Opciones' }} />
-          </>
-        )}
+      <Stack.Navigator initialRouteName="Splash">
+        <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
+        <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'Perfil' }} />
+        <Stack.Screen name="Verification" component={VerificationScreen} options={{ title: 'Verificación' }} />
+        <Stack.Screen name="ProductDetail" component={ProductDetailScreen} options={{ title: 'Producto' }} />
+        <Stack.Screen name="ServiceDetail" component={ServiceDetailScreen} options={{ title: 'Servicio' }} />
+        <Stack.Screen name="CreateProduct" component={CreateProductScreen} options={{ title: 'Vender' }} />
+        <Stack.Screen name="CreateService" component={CreateServiceScreen} options={{ title: 'Servicio' }} />
+        <Stack.Screen name="Chat" component={ChatScreen} options={{ title: 'Chat' }} />
+        <Stack.Screen name="VideoCall" component={VideoCallScreen} options={{ title: 'Video llamada', headerShown: false }} />
+        <Stack.Screen name="UserOptions" component={UserOptionsScreen} options={{ title: 'Opciones' }} />
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
@@ -930,6 +999,10 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  splashContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
+  loaderContainer: { marginTop: 40, height: 4, position: 'relative' },
+  loaderTrack: { width: '100%', height: 4, backgroundColor: '#e0e0e0', borderRadius: 2 },
+  loaderBar: { position: 'absolute', left: 0, top: 0, height: 4, backgroundColor: '#1f7aec', borderRadius: 2 },
   title: { fontSize: 28, fontWeight: '600', marginBottom: 16 },
   input: {
     width: '100%',
