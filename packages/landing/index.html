@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grip - Conecta con tu comunidad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            background: white;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .logo svg {
+            width: 120px;
+            height: 120px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+            text-align: left;
+        }
+
+        .feature {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .download-section {
+            margin-top: 50px;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 18px 40px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            border: none;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .download-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .download-btn.secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .download-btn.secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .coming-soon {
+            opacity: 0.7;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .app-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .app-link:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .download-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <path d="M 140 30 C 160 30 175 45 175 65 L 175 135 C 175 155 160 170 140 170 L 60 170 C 40 170 25 155 25 135 L 25 65 C 25 45 40 30 60 30 L 140 30 Z M 140 50 L 60 50 C 50 50 45 55 45 65 L 45 135 C 45 145 50 150 60 150 L 140 150 C 150 150 155 145 155 135 L 155 100 L 115 100 C 110 100 105 95 105 90 L 105 75 C 105 70 110 65 115 65 L 155 65 C 155 55 150 50 140 50 Z" fill="#667eea"/>
+                    <circle cx="40" cy="65" r="5" fill="#667eea" opacity="0.7"/>
+                    <circle cx="40" cy="135" r="5" fill="#667eea" opacity="0.7"/>
+                    <circle cx="160" cy="65" r="5" fill="#667eea" opacity="0.7"/>
+                    <circle cx="160" cy="135" r="5" fill="#667eea" opacity="0.7"/>
+                </g>
+            </svg>
+        </div>
+
+        <h1>Grip</h1>
+        <p class="subtitle">Conecta con tu comunidad</p>
+
+        <p class="description">
+            La app local que combina marketplace, servicios y conexiones sociales. 
+            Compra, vende, solicita servicios y conoce personas cerca de ti.
+        </p>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">👥</div>
+                <h3>Conecta</h3>
+                <p>Encuentra personas cerca de ti y construye una red local</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🛒</div>
+                <h3>Marketplace</h3>
+                <p>Compra y vende productos de forma segura en tu zona</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🚗</div>
+                <h3>Servicios</h3>
+                <p>Solicita taxis, entregas de comida y más servicios locales</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🍔</div>
+                <h3>Restaurantes</h3>
+                <p>Pide comida de restaurantes locales con entrega rápida</p>
+            </div>
+        </div>
+
+        <div class="download-section">
+            <h2 style="margin-bottom: 20px; font-size: 2rem;">Descarga Grip</h2>
+            <div class="download-buttons">
+                <a href="#download-android" class="download-btn" id="android-download">
+                    📱 Android
+                </a>
+                <a href="#download-ios" class="download-btn secondary" id="ios-download">
+                    🍎 iOS
+                </a>
+                <a href="http://localhost:19006" class="download-btn secondary" target="_blank">
+                    🌐 Usar en navegador
+                </a>
+            </div>
+            <p class="coming-soon" id="download-status">
+                Disponible próximamente
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Check for available downloads
+        async function checkDownloads() {
+            try {
+                // Try to fetch download links (you can configure these)
+                const response = await fetch('/downloads.json');
+                const data = await response.json();
+                
+                if (data.android) {
+                    document.getElementById('android-download').href = data.android;
+                    document.getElementById('android-download').style.opacity = '1';
+                }
+                
+                if (data.ios) {
+                    document.getElementById('ios-download').href = data.ios;
+                    document.getElementById('ios-download').style.opacity = '1';
+                }
+                
+                if (data.android || data.ios) {
+                    document.getElementById('download-status').textContent = 'Disponible ahora';
+                    document.getElementById('download-status').style.opacity = '1';
+                }
+            } catch (e) {
+                // Downloads not configured yet
+                console.log('Download links not configured');
+            }
+        }
+
+        // Check downloads on load
+        checkDownloads();
+    </script>
+</body>
+</html>
