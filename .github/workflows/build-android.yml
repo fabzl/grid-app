@@ -1,0 +1,81 @@
+name: Build Android APK (100% Gratis)
+
+on:
+  workflow_dispatch:  # Permite ejecutar manualmente desde GitHub
+  push:
+    branches: [ main ]
+    paths:
+      - 'packages/mobile/**'
+  release:
+    types: [created]
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: packages/mobile/package-lock.json
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        working-directory: packages/mobile
+        run: npm ci
+
+      - name: Install Expo CLI
+        run: npm install -g expo-cli@latest
+
+      - name: Prebuild Android project
+        working-directory: packages/mobile
+        run: |
+          npx expo prebuild --platform android --clean
+          # Esto genera la carpeta android/ con el proyecto nativo
+
+      - name: Build APK with Gradle
+        working-directory: packages/mobile/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease
+        continue-on-error: true
+
+      - name: Build Debug APK (fallback)
+        if: failure()
+        working-directory: packages/mobile/android
+        run: |
+          ./gradlew assembleDebug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: |
+            packages/mobile/android/app/build/outputs/apk/release/*.apk
+            packages/mobile/android/app/build/outputs/apk/debug/*.apk
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Create GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            packages/mobile/android/app/build/outputs/apk/release/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
