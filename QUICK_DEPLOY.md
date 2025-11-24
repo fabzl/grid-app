@@ -93,3 +93,4 @@ npm run mobile:build:web
 **Para testing rápido**: Usa Expo Go (Opción 1)  
 **Para distribución profesional**: Usa APK (Opción 2)
 
+

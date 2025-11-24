@@ -9,12 +9,13 @@
     },
     "preview": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "distribution": "internal"
       },
       "ios": {
-        "simulator": false
-      },
-      "distribution": "internal"
+        "simulator": false,
+        "distribution": "internal"
+      }
     },
     "production": {
       "android": {
@@ -29,4 +30,3 @@
     "production": {}
   }
 }
-

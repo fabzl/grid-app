@@ -13,7 +13,7 @@
     "mobile:android": "npm --prefix packages/mobile android",
     "mobile:ios": "npm --prefix packages/mobile ios",
     "mobile:web": "npm --prefix packages/mobile web",
-    "mobile:build:web": "npm --prefix packages/mobile exec expo export --platform web",
+    "mobile:build:web": "cd packages/mobile && npx expo export --platform web",
     "mobile:build:android": "cd packages/mobile && eas build --platform android --profile preview",
     "mobile:build:ios": "cd packages/mobile && eas build --platform ios --profile preview",
     "landing:serve": "python packages/landing/server.py",

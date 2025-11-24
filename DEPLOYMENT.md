@@ -160,3 +160,4 @@ Asegúrate de actualizar `packages/mobile/app.json` con:
 - La app móvil puede funcionar sin backend inicialmente (con datos mock)
 - Para producción, necesitarás configurar la conexión al backend Holochain
 
+

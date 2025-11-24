@@ -2,5 +2,5 @@
   "android": null,
   "ios": null,
   "web": "http://localhost:19006",
-  "description": "Add download links here after building the app"
+  "description": "Para obtener los links de descarga: 1) Ejecuta 'npm run mobile:build:android' o 'npm run mobile:build:ios', 2) Espera a que termine el build, 3) Copia el link de descarga desde https://expo.dev, 4) Pega el link aquí. Para más detalles, ver packages/mobile/BUILD.md"
 }

@@ -10,6 +10,7 @@ from pathlib import Path
 
 PORT = 8080
 LANDING_DIR = Path(__file__).resolve().parent
+PORT_FILE = LANDING_DIR / ".landing_port"  # File to store the actual port being used
 
 class LandingHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -25,35 +26,60 @@ class LandingHandler(http.server.SimpleHTTPRequestHandler):
         pass
 
 def start_server(port=PORT):
-    try:
-        with socketserver.TCPServer(("", port), LandingHandler) as httpd:
-            print(f"🌐 Landing page server running at http://localhost:{port}", flush=True)
-            print(f"   Serving files from: {LANDING_DIR}", flush=True)
-            sys.stdout.flush()
-            try:
-                httpd.serve_forever()
-            except KeyboardInterrupt:
-                print("\n🛑 Landing page server stopped", flush=True)
-    except OSError as e:
-        if e.errno == 98 or e.errno == 10048:  # Address already in use (Linux/Windows)
-            print(f"⚠️  Port {port} is already in use. Trying alternative port...", flush=True)
-            # Try alternative port
-            alt_port = port + 1
-            try:
-                with socketserver.TCPServer(("", alt_port), LandingHandler) as httpd:
-                    print(f"🌐 Landing page server running at http://localhost:{alt_port}", flush=True)
-                    print(f"   Serving files from: {LANDING_DIR}", flush=True)
-                    sys.stdout.flush()
+    # Clean up port file on startup
+    if PORT_FILE.exists():
+        try:
+            PORT_FILE.unlink()
+        except Exception:
+            pass
+    
+    original_port = port
+    # Try to find an available port
+    for attempt in range(10):  # Try up to 10 ports
+        try:
+            with socketserver.TCPServer(("", port), LandingHandler) as httpd:
+                # Write port to file so main.py can read it
+                try:
+                    PORT_FILE.write_text(str(port))
+                except Exception:
+                    pass  # Non-critical
+                
+                if port != original_port:
+                    print(f"WARNING: Port {original_port} was in use, using port {port} instead", flush=True)
+                print(f"Landing page server running at http://localhost:{port}", flush=True)
+                print(f"   Serving files from: {LANDING_DIR}", flush=True)
+                sys.stdout.flush()
+                try:
                     httpd.serve_forever()
-            except Exception as e2:
-                print(f"❌ Could not start server: {e2}", flush=True)
+                except KeyboardInterrupt:
+                    print("\nLanding page server stopped", flush=True)
+                finally:
+                    # Clean up port file on exit
+                    if PORT_FILE.exists():
+                        try:
+                            PORT_FILE.unlink()
+                        except Exception:
+                            pass
+                return  # Success, exit function
+        except OSError as e:
+            # Check if it's a port already in use error
+            # Windows: WinError 10048, Linux: errno 98
+            winerror = getattr(e, 'winerror', None)
+            errno = getattr(e, 'errno', None)
+            if winerror == 10048 or errno == 98:
+                if attempt < 9:  # Don't print error on last attempt
+                    print(f"WARNING: Port {port} is already in use. Trying port {port + 1}...", flush=True)
+                port += 1
+            else:
+                print(f"ERROR: Could not start server: {e}", flush=True)
                 sys.exit(1)
-        else:
-            print(f"❌ Could not start server: {e}", flush=True)
+        except Exception as e:
+            print(f"ERROR: Unexpected error: {e}", flush=True)
             sys.exit(1)
-    except Exception as e:
-        print(f"❌ Unexpected error: {e}", flush=True)
-        sys.exit(1)
+    
+    # If we get here, all ports failed
+    print(f"ERROR: Could not find an available port. Tried ports {original_port} to {port - 1}", flush=True)
+    sys.exit(1)
 
 if __name__ == "__main__":
     start_server()
